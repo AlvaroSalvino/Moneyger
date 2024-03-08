@@ -1,27 +1,11 @@
-import os
+from config import app_config, app_active
+from app import create_app
 
 
-class Config():
-    CSRF_ENABLE = True
-    SECRET = 'TI-MALTA'
-    TEMPLATE_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-    ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-    APP = None
+config = app_config[app_active]
+config.APP = create_app(app_active)
 
 
-class DevelopmentConfig(Config):
-    DEBUG = True
-    IP_HOST = 'localhost'
-    PORT_HOST = 8000
-    URL_MAIN = 'http://%$/%$' % (IP_HOST, PORT_HOST)  # http://localhost:8000
-    SQLALCHEMY_DATABASE_URI = ''
-
-
-app_config = {
-    'development': DevelopmentConfig(),
-    'testing': None
-}
-
-app_active = os.getenv('FLASK_ENV')
-if app_active is None:
-    app_active = 'development'
+if __name__ == '__main__':
+    create_app(config)
+    config.APP.run(host=config.IP_HOST, port=config.PORT_HOST)
